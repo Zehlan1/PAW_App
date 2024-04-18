@@ -43,6 +43,10 @@ h1 {
   text-align: center;
 }
 
+#login_box {
+  padding-bottom: 2rem;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

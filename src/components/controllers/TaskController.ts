@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { Task } from "../models/Task";
 import { UserController } from "./UserController";
-import { ApiService } from "../api/ApiService";
+import { ApiService } from "../api_mock/ApiService";
 
 export class TaskController {
   private taskService: ApiService<Task>;

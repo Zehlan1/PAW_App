@@ -1,22 +1,27 @@
-import { ProjectController } from '../src/components/controllers/ProjectController';
+import { UserController } from './components/controllers/UserController';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const projectController = new ProjectController();
-  projectController.renderProjects();
+  fetchUserInfo();
+  const loginForm = document.getElementById('login_form') as HTMLFormElement;
+  loginForm.addEventListener('submit', (event) => UserController.loginUser(event));
 });
 
-const user = {
-  username: 'jkowal',
-  password: '123'
+function fetchUserInfo() {
+  fetch('http://localhost:3000/userinfo')
+      .then(response => response.json())
+      .then(user => {
+          if (user && user.username) {
+              updateUsernameDisplay(user.username);
+          }
+      })
+      .catch(error => {
+          console.error('Failed to fetch user info:', error);
+      });
 }
 
-const response = await fetch('http://localhost:3000/login', {
-  method: 'POST',
-  headers: {'Content-Type': 'application/json'},
-  body: JSON.stringify(user)
-})
-
-if(response.ok){
-  const data = await response.json();
-  console.log(data)
+function updateUsernameDisplay(username: string | null) {
+  const usernameDisplay = document.getElementById('username_box');
+  if (usernameDisplay) {
+      usernameDisplay.textContent = username;
+  }
 }

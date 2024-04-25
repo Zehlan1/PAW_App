@@ -5,6 +5,7 @@ import 'dotenv/config'
 import cors from 'cors'
 import session from 'express-session'
 import passport from 'passport'
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 
 const app = express()
 const port = 3000
@@ -91,6 +92,40 @@ app.get('/userinfo', (req, res) => {
     } else {
         res.status(401).send('No user is currently logged in.');
     }
+});
+
+//Login with Google
+passport.use(new GoogleStrategy({
+    clientID: process.env.CLIENT_ID as string,
+    clientSecret: process.env.CLIENT_SECRET as string,
+    callbackURL: "http://localhost:3000/auth/google/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    const user = {
+        id: profile.id,
+        username: profile.displayName,
+        email: profile.emails ? profile.emails[0].value : undefined
+      };
+  
+    done(null, user);
+  }
+));
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+app.get('/auth/google/callback', 
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    function(req, res) {
+        req.session.user = req.user as User; 
+        console.log(req.user);
+        //res.redirect('/userinfo');
+        const username = req.session.user;
+        const token = generateToken(300, { username });
+        const refreshToken = generateToken(600, { username });
+
+        // res.redirect('http://localhost:5173/')
+        // res.status(200).send({ token, refreshToken });
+        res.status(200).send({ token, refreshToken, redirectUrl: 'http://localhost:5173/' });        
 });
 
 //Helper functions

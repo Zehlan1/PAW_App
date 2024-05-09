@@ -118,14 +118,7 @@ app.get('/auth/google/callback',
     function(req, res) {
         req.session.user = req.user as User; 
         console.log(req.user);
-        //res.redirect('/userinfo');
-        const username = req.session.user;
-        const token = generateToken(300, { username });
-        const refreshToken = generateToken(600, { username });
-
-        // res.redirect('http://localhost:5173/')
-        // res.status(200).send({ token, refreshToken });
-        res.status(200).send({ token, refreshToken, redirectUrl: 'http://localhost:5173/' });        
+        res.json(req.session.user);   
 });
 
 //Helper functions

@@ -8,96 +8,131 @@
     <title>App</title>
   </head>
   <body>
-    <a href="index.html"><h1>Home</h1></a>
-    <div id="user_box">
-      <span id="username_box"></span>
-    </div>
 
-    <div id="login_box">
-      <form id="login_form">
-        <input type="text" id="user_login" placeholder="Username" required/>
-        <input type="password" id="user_password" placeholder="Password" required/>
-        <button type="submit">Log In</button>
-      </form>
-      <a href="http://localhost:3000/auth/google" class="google-login-button">Login with Google</a>
-    </div>
-
-    <div id="project-section" style="display: none;">
-      <form id="project-form">
-        <input type="hidden" id="project-id">
-        <input type="text" id="project-name" placeholder="Project Name" required>
-        <input id="project-description" placeholder="Project Description" required></input>
-        <button type="submit">Save Project</button>
-      </form>
-
-      <div id="projects-list"></div>
-    </div>
-
-    <div id="story-section" style="display: none;">
-      <form id="story-form">
-        <input type="hidden" id="story-id">
-        <input type="text" id="story-name" placeholder="Story Name" required>
-        <input id="story-description" placeholder="Story Description" required></input>
-        <select id="story-priority">
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-        </select>
-        <select id="story-status">
-            <option value="Todo">To Do</option>
-            <option value="Doing">Doing</option>
-            <option value="Done">Done</option>
-        </select>
-        <button type="submit">Save Story</button>
-      </form>
-
-      <select id="story-filter">
-        <option value="Todo">To Do</option>
-        <option value="Doing">Doing</option>
-        <option value="Done">Done</option>
-      </select>
-
-      <div id="stories-list"></div>
-    </div>
-
-    <div id="task-section" style="display: none;">
-      <form id="task-form">
-        <input type="hidden" id="task-id">
-        <input type="text" id="task-name" placeholder="Task Name" required>
-        <input id="task-description" placeholder="Task Description" required></input>
-        <select id="task-priority">
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-        </select>
-        <input type="hidden" id="story-id">
-        <input id="task-estimated-time" placeholder="Estimated Time (hours)">
-        <select id="task-status">
-            <option value="Todo">To Do</option>
-            <option value="Doing">Doing</option>
-            <option value="Done">Done</option>
-        </select>
-        <button type="submit">Save Task</button>
-      </form>
-
-      <div id="tasks-board" class="kanban-board">
-        <div id="tasks-todo" class="kanban-column">
-            <h3>To Do</h3>
-            <div class="tasks-list"></div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light px-2">
+      <a class="navbar-brand" href="#">Home</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="#">Login</a>
+          </li> -->
+          <li class="nav-item">
+            <a class="nav-link" href="http://localhost:3000/auth/google">Login with Google</a>
+          </li>
+        </ul>
+        <div class="my-2 my-lg-0 ms-auto">
+          <span id="username_box"></span>
+          DUMMY
         </div>
-        <div id="tasks-doing" class="kanban-column">
-            <h3>Doing</h3>
-            <div class="tasks-list"></div>
-        </div>
-        <div id="tasks-done" class="kanban-column">
-            <h3>Done</h3>
-            <div class="tasks-list"></div>
-        </div>
+      </div>
+    </nav>
 
-        <div id="task-details-container"></div>
+    <div class="container d-flex justify-content-center align-items-center p-3">
+      <div class="mx-auto mb-3" id="login_box">
+        <form id="login_form">
+          <label for="user_login" class="form-label">Login</label>
+          <input type="text" class="form-control" id="user_login" placeholder="Username" required/>
+          <label for="user_password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="user_password" placeholder="Password" required/>
+          <button type="submit" class="btn btn-primary">Log In</button>
+        </form>
+      </div>
+  
+      <div class="mx-auto mb-3"  id="project-section" style="display: none;">
+        <form id="project-form mb-3">
+          <input type="hidden" id="project-id">
+          <label for="project-name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="project-name" placeholder="Project Name" required>
+          <label for="project-description" class="form-label">Description</label>
+          <input type="text" class="form-control" id="project-description" placeholder="Project Description" required></input>
+          <button type="submit" class="btn btn-primary">Save Project</button>
+        </form>
+  
+        <div id="projects-list"></div>
+      </div>
+  
+      <div class="mx-auto mb-3" id="story-section" style="display: none;">
+        <form id="story-form mb-3">
+          <input type="hidden" id="story-id">
+          <label for="story-name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="story-name" placeholder="Story Name" required>
+          <label for="story-description" class="form-label">Description</label>
+          <input type="text" class="form-control" id="story-description" placeholder="Story Description" required></input>
+          <label for="story-priority" class="form-label">Priority</label>
+          <select class="form-select" id="story-priority">
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+          </select>
+          <label for="story-status" class="form-label">Status</label>
+          <select class="form-select" id="story-status">
+              <option value="Todo">To Do</option>
+              <option value="Doing">Doing</option>
+              <option value="Done">Done</option>
+          </select>
+          <button type="submit" class="btn btn-primary">Save Story</button>
+        </form>
+  
+        <label for="story-filter" class="form-label">Filter by status:</label>
+        <select class="form-select" id="story-filter">
+          <option value="Todo">To Do</option>
+          <option value="Doing">Doing</option>
+          <option value="Done">Done</option>
+        </select>
+  
+        <div id="stories-list"></div>
+      </div>
+  
+      <div class="mx-auto mb-3" id="task-section" style="display: none;">
+        <form id="task-form mb-3">
+          <input type="hidden" id="task-id">
+          <label for="task-name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="task-name" placeholder="Task Name" required>
+          <label for="task-description" class="form-label">Description</label>
+          <input type="text" class="form-control" id="task-description" placeholder="Task Description" required></input>
+          <label for="task-priority" class="form-label">Priority</label>
+          <select class="form-select" id="task-priority">
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+          </select>
+          <input type="hidden" id="story-id">
+          <label for="task-estimated-time" class="form-label">Est. Completion Time</label>
+          <input type="number" class="form-control" id="task-estimated-time" placeholder="Estimated Time (hours)">
+          <label for="task-status" class="form-label">Status</label>
+          <select class="form-select" id="task-status">
+              <option value="Todo">To Do</option>
+              <option value="Doing">Doing</option>
+              <option value="Done">Done</option>
+          </select>
+          <button type="submit" class="btn btn-primary">Save Task</button>
+        </form>
+  
+        <div class="container mx-auto mb-3 bg-secondary" id="tasks-board">
+          <div class="row">
+            <div class="col" id="tasks-todo">
+              <h3>To Do</h3>
+              <div class="tasks-list"></div>
+            </div>
+            <div class="col" id="tasks-doing">
+              <h3>Doing</h3>
+              <div class="tasks-list"></div>
+           </div>
+            <div class="col" id="tasks-done">
+              <h3>Done</h3>
+              <div class="tasks-list"></div>
+            </div>
+          </div>
+          <div class="col" id="task-details-container"></div>
+        </div>
       </div>
     </div>
 
     <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="./src/js/main.js"></script>
   </body>
 </html>

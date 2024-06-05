@@ -21,21 +21,28 @@ export class ProjectController {
   
         projects.forEach((project) => {
           const projectElement = document.createElement("div");
+          projectElement.classList.add("container", "mx-auto", "mb-2", "bg-secondary");
           projectElement.innerHTML = `
             <h3>${project.name}</h3>
-            <p>Description: ${project.description}</p>`;
-  
+            <p class="text-muted">${project.description}</p>
+          `;
+
+          const selectButton = document.createElement("button");
+          selectButton.textContent = "Select";
+          selectButton.classList.add("btn", "btn-success");
+          selectButton.onclick = () => this.setActiveProject(project.id);
+
           const editButton = document.createElement("button");
           editButton.textContent = "Edit";
+          editButton.classList.add("btn", "btn-warning");
           editButton.onclick = () => this.editProject(project.id);
   
           const deleteButton = document.createElement("button");
           deleteButton.textContent = "Delete";
+          deleteButton.classList.add("btn", "btn-danger");
           deleteButton.onclick = () => this.deleteProject(project.id);
   
-          const selectButton = document.createElement("button");
-          selectButton.textContent = "Select";
-          selectButton.onclick = () => this.setActiveProject(project.id);
+          
   
           projectElement.appendChild(selectButton);
           projectElement.appendChild(editButton);

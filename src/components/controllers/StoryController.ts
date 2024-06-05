@@ -33,25 +33,30 @@ export class StoryController {
 
       stories.forEach((story) => {
         const storyElement = document.createElement("div");
+        storyElement.classList.add("container", "mx-auto", "mb-2", "bg-secondary");
         storyElement.innerHTML = `
-                    <h4>${story.name}</h4>
-                    <p>${story.description}</p>
-                    <p>Priority: ${story.priority}</p>
-                    <p>Status: ${story.state}</p>
-                    <p>Created: ${story.creationDate}</p>
-                `;
+          <h4>${story.name}</h4>
+          <p class="text-muted">${story.description}</p>
+          <p>Priority: ${story.priority}</p>
+          <p>Status: ${story.state}</p>
+          <p>Created: ${story.creationDate}</p>
+        `;
+
+        const selectButton = document.createElement("button");
+        selectButton.textContent = "Select";
+        selectButton.classList.add("btn", "btn-success");
+        selectButton.onclick = () => this.setActiveStory(story.id);
 
         const editButton = document.createElement("button");
         editButton.textContent = "Edit";
+        editButton.classList.add("btn", "btn-warning");
         editButton.onclick = () => this.editStory(story.id);
 
         const deleteButton = document.createElement("button");
         deleteButton.textContent = "Delete";
+        deleteButton.classList.add("btn", "btn-danger");
         deleteButton.onclick = () => this.deleteStory(story.id);
 
-        const selectButton = document.createElement("button");
-        selectButton.textContent = "Select";
-        selectButton.onclick = () => this.setActiveStory(story.id);
 
         storyElement.appendChild(selectButton);
         storyElement.appendChild(editButton);

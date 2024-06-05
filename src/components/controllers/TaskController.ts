@@ -31,21 +31,26 @@ export class TaskController {
     tasks.forEach((task) => {
       const taskElement = document.createElement("div");
       taskElement.className = "task-card";
+      taskElement.classList.add("container", "mx-auto", "mb-2", "bg-primary");
       taskElement.innerHTML = `
-            <h4>${task.name}</h4>
-            <p>${task.description}</p>
-            <p>Priority: ${task.priority}</p>`;
+        <h4>${task.name}</h4>
+        <p class="text-muted">${task.description}</p>
+        <p>Priority: ${task.priority}</p>
+      `;
 
       const editButton = document.createElement("button");
       editButton.textContent = "Edit";
+      editButton.classList.add("btn", "btn-warning");
       editButton.onclick = () => this.editTask(task.id);
 
       const deleteButton = document.createElement("button");
       deleteButton.textContent = "Delete";
+      deleteButton.classList.add("btn", "btn-danger");
       deleteButton.onclick = () => this.deleteTask(task.id);
 
       const detailsButton = document.createElement("button");
       detailsButton.textContent = "See details";
+      detailsButton.classList.add("btn", "btn-info");
       detailsButton.onclick = () => this.showTaskDetails(task.id);
 
       taskElement.appendChild(editButton);

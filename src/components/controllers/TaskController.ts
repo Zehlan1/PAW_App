@@ -147,6 +147,7 @@ export class TaskController {
     if (task.state == "Todo") {
       const selectElement = document.createElement("select");
       selectElement.id = "user-select";
+      selectElement.classList.add("form-select")
       const optionElement = document.createElement("option");
       optionElement.value = "";
       optionElement.textContent = "Select a user";
@@ -155,16 +156,19 @@ export class TaskController {
 
       const assignUserButton = document.createElement("button");
       assignUserButton.textContent = "Assign User";
+      assignUserButton.classList.add("btn", "btn-primary");
       assignUserButton.onclick = () => this.assignUser(task.id);
 
       detailsContainer.appendChild(assignUserButton);
     }
     const changeStateButton = document.createElement("button");
     changeStateButton.textContent = "Mark as done";
+    changeStateButton.classList.add("btn", "btn-success");
     changeStateButton.onclick = () => this.changeTaskState(task.id);
 
     const closeButton = document.createElement("button");
     closeButton.textContent = "Close";
+    closeButton.classList.add("btn", "btn-danger");
     closeButton.onclick = () => this.changeTaskDetailsVisibility();
 
     

@@ -17,16 +17,43 @@
     
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="#">Login</a>
-          </li> -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" id="login_btn" data-bs-toggle="dropdown" aria-expanded="false">
+              Login
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <div class="mx-auto mb-3" id="login_box">
+                  <form id="login_form">
+                    <label for="user_login" class="form-label">Login</label>
+                    <input type="text" class="form-control" id="user_login" placeholder="Username" required/>
+                    <label for="user_password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="user_password" placeholder="Password" required/>
+                    <button type="submit" class="btn btn-primary">Log In</button>
+                  </form>
+                </div>
+              </li>
+            </ul>
+          </li>
           <li class="nav-item">
-            <a class="nav-link" href="http://localhost:3000/auth/google">Login with Google</a>
+            <a class="nav-link" href="http://localhost:3000/auth/google" id="google_login_btn">Login with Google</a>
           </li>
           <li class="nav-item">
             <button type="button" id="btn_switch_theme" class="btn" data-bs-toggle="button">Theme</button>
           </li>
-          
+          <li class="nav-item">
+            <button type="button" id="notify_btn" class="btn">Send Notification</button>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Notifications
+            </a>
+            <ul class="dropdown-menu">
+              <li>Dummy1</li>
+              <li>Dummy2</li>
+              <li>Dummy3</li>
+            </ul>
+          </li>
         </ul>
         <div class="my-2 my-lg-0 ms-auto">
           <span id="username_box"></span>
@@ -36,7 +63,7 @@
     </nav>
 
     <div class="container d-flex justify-content-center align-items-center p-3">
-      <div class="mx-auto mb-3" id="login_box">
+      <!-- <div class="mx-auto mb-3" id="login_box">
         <form id="login_form">
           <label for="user_login" class="form-label">Login</label>
           <input type="text" class="form-control" id="user_login" placeholder="Username" required/>
@@ -44,10 +71,10 @@
           <input type="password" class="form-control" id="user_password" placeholder="Password" required/>
           <button type="submit" class="btn btn-primary">Log In</button>
         </form>
-      </div>
+      </div> -->
   
-      <div class="mx-auto mb-3"  id="project-section" style="display: none;">
-        <form id="project-form mb-3">
+      <div class="mx-auto mb-3"  id="project-section" style="display: block;">
+        <form id="project-form" class="mb-3">
           <input type="hidden" id="project-id">
           <label for="project-name" class="form-label">Name</label>
           <input type="text" class="form-control" id="project-name" placeholder="Project Name" required>
@@ -60,7 +87,7 @@
       </div>
   
       <div class="mx-auto mb-3" id="story-section" style="display: none;">
-        <form id="story-form mb-3">
+        <form id="story-form" class="mb-3">
           <input type="hidden" id="story-id">
           <label for="story-name" class="form-label">Name</label>
           <input type="text" class="form-control" id="story-name" placeholder="Story Name" required>
@@ -92,7 +119,7 @@
       </div>
   
       <div class="mx-auto mb-3" id="task-section" style="display: none;">
-        <form id="task-form mb-3">
+        <form id="task-form" class="mb-3">
           <input type="hidden" id="task-id">
           <label for="task-name" class="form-label">Name</label>
           <input type="text" class="form-control" id="task-name" placeholder="Task Name" required>
@@ -137,6 +164,7 @@
     </div>
 
     <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/components/api_notification/NotificationService.ts"></script>
     <script type="module" src="./src/js/main.js"></script>
     <script type="module" src="./src/js/theme_switcher.js"></script>
   </body>

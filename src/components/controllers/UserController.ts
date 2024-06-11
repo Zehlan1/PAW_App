@@ -1,8 +1,6 @@
 import { User } from "../models/User";
-import { ProjectController } from "./ProjectController";
 
 export class UserController {
-  static projectController = new ProjectController();
 
   static users: User[] = [
     { id: "1", firstName: "Tom", lastName: "Scott", role: "Admin" },
@@ -43,9 +41,8 @@ export class UserController {
     sessionStorage.setItem('token', data.token);
     sessionStorage.setItem('refreshToken', data.refreshToken);
     sessionStorage.setItem('userData', JSON.stringify({ username}));
-
-    this.toggleLoginFormVisibility(false);
-    this.toggleProjectVisibility(true);
+    
+    this.toggleLoginBtns();
     this.updateUsernameDisplay();
   }
 
@@ -55,11 +52,11 @@ export class UserController {
     loginSection.style.display = show ? "block" : "none";
   }
 
-  static toggleProjectVisibility(show: boolean) {
-    const projectSection = document.getElementById("project-section");
-    if (projectSection == null) return;
-    projectSection.style.display = show ? "block" : "none";
-    this.projectController.renderProjects();
+  static toggleLoginBtns() {
+    const loginBtn = document.getElementById("login_btn");
+    const googleLoginBtn = document.querySelector("#google_login_btn");
+    loginBtn?.classList.add("disabled");
+    googleLoginBtn?.classList.add("disabled");
   }
 
   static updateUsernameDisplay() {

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -9,7 +9,7 @@
   </head>
   <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light px-2">
+    <nav class="navbar navbar-expand-lg px-2">
       <a class="navbar-brand" href="#">Home</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -23,6 +23,10 @@
           <li class="nav-item">
             <a class="nav-link" href="http://localhost:3000/auth/google">Login with Google</a>
           </li>
+          <li class="nav-item">
+            <button type="button" id="btn_switch_theme" class="btn" data-bs-toggle="button">Theme</button>
+          </li>
+          
         </ul>
         <div class="my-2 my-lg-0 ms-auto">
           <span id="username_box"></span>
@@ -134,5 +138,6 @@
 
     <script type="module" src="/src/main.ts"></script>
     <script type="module" src="./src/js/main.js"></script>
+    <script type="module" src="./src/js/theme_switcher.js"></script>
   </body>
 </html>

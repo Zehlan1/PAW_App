@@ -3,6 +3,6 @@ export interface Notification {
     title: string,
     message: string,
     date: ISOString,
-    prority: 'low'|'medium'|'high',
+    priority: 'low'|'medium'|'high',
     read: boolean
 }

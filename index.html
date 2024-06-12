@@ -42,13 +42,19 @@
             <button type="button" id="btn_switch_theme" class="btn" data-bs-toggle="button">Theme</button>
           </li>
           <li class="nav-item">
-            <button type="button" id="notify_btn" class="btn">Send Notification</button>
+            <button type="button" id="notify_btn_low" class="btn">Notify Low</button>
           </li>
+          <li class="nav-item">
+            <button type="button" id="notify_btn_med" class="btn">Notify Medium</button>
+          </li>
+          <!-- <li class="nav-item">
+            <div id="notification-count"></div>
+          </li> -->
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="notification-count">
               Notifications
             </a>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu" id="notification-list">
               <li>Dummy1</li>
               <li>Dummy2</li>
               <li>Dummy3</li>

@@ -1,19 +1,35 @@
-import { v4 as uuidv4 } from "uuid";
 import { Project } from "../models/Project";
-import { ApiService } from "../api_mock/ApiService";
 import { StoryController } from "./StoryController";
 
+import { initializeApp } from "firebase/app";
+import { deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore"; 
+
+// TODO: Replace the following with your app's Firebase project configuration
+// See: https://support.google.com/firebase/answer/7015592
+const firebaseConfig = {
+  apiKey: "AIzaSyCG8TnV2eLqRwp3WsTMdKFHP8TJTA62b20",
+  authDomain: "paw-app-e2f08.firebaseapp.com",
+  projectId: "paw-app-e2f08",
+  storageBucket: "paw-app-e2f08.appspot.com",
+  messagingSenderId: "794662808966",
+  appId: "1:794662808966:web:b9a58d41bd43810d0a9007",
+  measurementId: "G-3DDPF9BGC4"
+};
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+// Initialize Cloud Firestore and get a reference to the service
+const db = getFirestore(app);
+
 export class ProjectController {
-    private storageService: ApiService<Project>;
     private storyController = new StoryController();
   
     constructor() {
-      this.storageService = new ApiService<Project>("projects");
       this.attachEventListeners();
     }
   
-    public renderProjects() {
-      const projects = this.storageService.getAllItems();
+    public async renderProjects() {
+      const projects = await getDocs(collection(db, "projects"));
       const projectsList = document.getElementById("projects-list");
   
       if (projectsList) {
@@ -23,8 +39,8 @@ export class ProjectController {
           const projectElement = document.createElement("div");
           projectElement.classList.add("container", "mx-auto", "mb-2", "bg-secondary");
           projectElement.innerHTML = `
-            <h3>${project.name}</h3>
-            <p class="text-muted">${project.description}</p>
+            <h3>${project.data().name}</h3>
+            <p class="text-muted">${project.data().description}</p>
           `;
 
           const selectButton = document.createElement("button");
@@ -42,8 +58,6 @@ export class ProjectController {
           deleteButton.classList.add("btn", "btn-danger");
           deleteButton.onclick = () => this.deleteProject(project.id);
   
-          
-  
           projectElement.appendChild(selectButton);
           projectElement.appendChild(editButton);
           projectElement.appendChild(deleteButton);
@@ -53,7 +67,7 @@ export class ProjectController {
       }
     }
   
-    public saveProject(event: Event) {
+    public async saveProject(event: Event) {
       event.preventDefault();
   
       const idInput = document.getElementById("project-id") as HTMLInputElement;
@@ -61,36 +75,45 @@ export class ProjectController {
       const descriptionInput = document.getElementById("project-description") as HTMLTextAreaElement;
   
       const project: Project = {
-        id: idInput.value || uuidv4(),
         name: nameInput.value,
         description: descriptionInput.value,
       };
-  
-      if (idInput.value) {
-        this.storageService.updateItem(project);
+
+      if(!idInput.value) {
+        try {
+          await addDoc(collection(db, "projects"), project);
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
       } else {
-        this.storageService.addItem(project);
+        const docRef = doc(db, 'projects', idInput.value);
+        await setDoc(docRef, project);
       }
-  
+
       this.clearForm();
       this.renderProjects();
     }
   
-    public editProject(id: string) {
-      const project = this.storageService.getItemById(id);
-      if (project) {
+    public async editProject(id: string) {
+      const docRef = doc(db, "projects", id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        this.clearForm();
         const idInput = document.getElementById("project-id") as HTMLInputElement;
         const nameInput = document.getElementById("project-name") as HTMLInputElement;
         const descriptionInput = document.getElementById("project-description") as HTMLTextAreaElement;
-  
-        idInput.value = project.id;
-        nameInput.value = project.name;
-        descriptionInput.value = project.description;
+
+        idInput.value = docSnap.id;
+        nameInput.value = docSnap.data().name;
+        descriptionInput.value = docSnap.data().description;
+      } else {
+        console.log("No project!");
       }
     }
   
-    public deleteProject(id: string) {
-      this.storageService.deleteItem(id);
+    public async deleteProject(id: string) {
+      await deleteDoc(doc(db, "projects", id));
       this.renderProjects();
     }
   
@@ -113,10 +136,10 @@ export class ProjectController {
       }
     }
   
-    public setActiveProject(id: string): void {
-      this.storageService.setActiveProjectId(id);
+    public async setActiveProject(id: string): Promise<void> {
+      localStorage.setItem('activeProjectId', id);
+      await this.storyController.renderStories();
       this.toggleProjectVisibility(false);
-      this.storyController.renderStories();
       this.toggleStoryVisibility(true);
     }
   

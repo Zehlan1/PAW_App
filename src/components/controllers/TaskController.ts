@@ -3,17 +3,37 @@ import { Task } from "../models/Task";
 import { UserController } from "./UserController";
 import { ApiService } from "../api_mock/ApiService";
 
+import { initializeApp } from "firebase/app";
+import { deleteDoc, doc, getDoc, getDocs, getFirestore, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore"; 
+
+// TODO: Replace the following with your app's Firebase project configuration
+// See: https://support.google.com/firebase/answer/7015592
+const firebaseConfig = {
+  apiKey: "AIzaSyCG8TnV2eLqRwp3WsTMdKFHP8TJTA62b20",
+  authDomain: "paw-app-e2f08.firebaseapp.com",
+  projectId: "paw-app-e2f08",
+  storageBucket: "paw-app-e2f08.appspot.com",
+  messagingSenderId: "794662808966",
+  appId: "1:794662808966:web:b9a58d41bd43810d0a9007",
+  measurementId: "G-3DDPF9BGC4"
+};
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+// Initialize Cloud Firestore and get a reference to the service
+const db = getFirestore(app);
+
 export class TaskController {
-  private taskService: ApiService<Task>;
+  private storyId = localStorage.getItem('activeStoryId');
 
   constructor() {
-    this.taskService = new ApiService<Task>("tasks");
     this.attachEventListeners();
   }
 
-  public renderTasks() {
-    const storyId = this.taskService.getActiveStoryId();
-    const tasks = this.taskService.getAllItems().filter((task) => task.storyId === storyId);
+  public async renderTasks() {
+    const q = query(collection(db, "tasks"), where("storyId", "==", this.storyId));
+    const querySnapshot = await getDocs(q);
+
     const todoList = document.getElementById("tasks-todo")?.querySelector(".tasks-list");
     const doingList = document.getElementById("tasks-doing")?.querySelector(".tasks-list");
     const doneList = document.getElementById("tasks-done")?.querySelector(".tasks-list");
@@ -28,14 +48,14 @@ export class TaskController {
       doneList.innerHTML = "";
     }
 
-    tasks.forEach((task) => {
+    querySnapshot.forEach((task) => {
       const taskElement = document.createElement("div");
       taskElement.className = "task-card";
       taskElement.classList.add("container", "mx-auto", "mb-2", "bg-primary");
       taskElement.innerHTML = `
-        <h4>${task.name}</h4>
-        <p class="text-muted">${task.description}</p>
-        <p>Priority: ${task.priority}</p>
+        <h4>${task.data().name}</h4>
+        <p class="text-muted">${task.data().description}</p>
+        <p>Priority: ${task.data().priority}</p>
       `;
 
       const editButton = document.createElement("button");
@@ -58,17 +78,17 @@ export class TaskController {
       taskElement.appendChild(detailsButton);
 
       // Append to the correct column based on task status
-      if (task.state === "Todo" && todoList) {
+      if (task.data().state === "Todo" && todoList) {
         todoList.appendChild(taskElement);
-      } else if (task.state === "Doing" && doingList) {
+      } else if (task.data().state === "Doing" && doingList) {
         doingList.appendChild(taskElement);
-      } else if (task.state === "Done" && doneList) {
+      } else if (task.data().state === "Done" && doneList) {
         doneList.appendChild(taskElement);
       }
     });
   }
 
-  public saveTask(event: Event) {
+  public async saveTask(event: Event) {
     event.preventDefault();
     const idInput = document.getElementById("task-id") as HTMLInputElement;
     const nameInput = document.getElementById("task-name") as HTMLInputElement;
@@ -76,10 +96,9 @@ export class TaskController {
     const prioritySelect = document.getElementById("task-priority") as HTMLSelectElement;
     const statusSelect = document.getElementById("task-status") as HTMLSelectElement;
     const estimatedTimeInput = document.getElementById("task-estimated-time") as HTMLSelectElement;
-    const storyId = this.taskService.getActiveStoryId() || "";
+    const storyId = this.storyId || "";
 
     const task: Task = {
-      id: idInput.value || uuidv4(),
       name: nameInput.value,
       description: descriptionInput.value,
       priority: prioritySelect.value as "Low" | "Medium" | "High",
@@ -89,19 +108,27 @@ export class TaskController {
       creationDate: new Date(),
     };
 
-    if (idInput.value) {
-      this.taskService.updateItem(task);
+    if(!idInput.value) {
+      try {
+        await addDoc(collection(db, "tasks"), task);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
     } else {
-      this.taskService.addItem(task);
+      const docRef = doc(db, 'tasks', idInput.value);
+      await setDoc(docRef, task);
     }
 
     this.clearForm();
     this.renderTasks();
   }
 
-  public editTask(id: string) {
-    const task = this.taskService.getItemById(id);
-    if (task) {
+  public async editTask(id: string) {
+    const docRef = doc(db, "tasks", id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      this.clearForm();
       const idInput = document.getElementById("task-id") as HTMLInputElement;
       const nameInput = document.getElementById("task-name") as HTMLInputElement;
       const descriptionInput = document.getElementById("task-description") as HTMLTextAreaElement;
@@ -109,98 +136,96 @@ export class TaskController {
       const statusSelect = document.getElementById("task-status") as HTMLSelectElement;
       const estimatedTimeInput = document.getElementById("task-estimated-time") as HTMLSelectElement;
 
-      idInput.value = task.id;
-      nameInput.value = task.name;
-      descriptionInput.value = task.description;
-      prioritySelect.value = task.priority;
-      statusSelect.value = task.state;
-      estimatedTimeInput.value = task.estimatedTime;
+      idInput.value = docSnap.id;
+      nameInput.value = docSnap.data().name;
+      descriptionInput.value = docSnap.data().description;
+      prioritySelect.value = docSnap.data().priority;
+      statusSelect.value = docSnap.data().state;
+      estimatedTimeInput.value = docSnap.data().estimatedTime;
     }
   }
 
-  public deleteTask(id: string) {
-    const task = this.taskService.getItemById(id);
-    if (task) {
-      this.taskService.deleteItem(id);
-      this.renderTasks();
-    }
+  public async deleteTask(id: string) {
+    await deleteDoc(doc(db, "tasks", id));
+    this.renderTasks();
   }
 
-  public showTaskDetails(taskId: string) {
-    const task = this.taskService.getItemById(taskId);
-    if (!task) return;
+  public async showTaskDetails(taskId: string) {
+    const docRef = doc(db, "tasks", taskId);
+    const docSnap = await getDoc(docRef);
 
     const detailsContainer = document.getElementById("task-details-container");
     if (!detailsContainer) return;
 
-    detailsContainer.innerHTML = `
-        <h2>Task Details: ${task.name}</h2>
-        <p>Description: ${task.description}</p>
-        <p>Priority: ${task.priority}</p>
-        <p>Status: ${task.state}</p>
-        <p>Estimated Time: ${task.estimatedTime} hours</p>
-        <p>Assigned to: ${task.userId || "None"}</p>
-        <p>Start date: ${task.startDate || "None"}</p>
-        <p>End date: ${task.endDate || "None"}</p>
-    `;
+    if (docSnap.exists()) {
+      detailsContainer.innerHTML = `
+        <h2>Task Details: ${docSnap.data().name}</h2>
+        <p>Description: ${docSnap.data().description}</p>
+        <p>Priority: ${docSnap.data().priority}</p>
+        <p>Status: ${docSnap.data().state}</p>
+        <p>Estimated Time: ${docSnap.data().estimatedTime} hours</p>
+        <p>Assigned to: ${docSnap.data().userId || "None"}</p>
+        <p>Start date: ${docSnap.data().startDate || "None"}</p>
+        <p>End date: ${docSnap.data().endDate || "None"}</p>
+      `;
 
-    if (task.state == "Todo") {
-      const selectElement = document.createElement("select");
-      selectElement.id = "user-select";
-      selectElement.classList.add("form-select")
-      const optionElement = document.createElement("option");
-      optionElement.value = "";
-      optionElement.textContent = "Select a user";
-      selectElement.appendChild(optionElement);
-      detailsContainer.appendChild(selectElement);
-
-      const assignUserButton = document.createElement("button");
-      assignUserButton.textContent = "Assign User";
-      assignUserButton.classList.add("btn", "btn-primary");
-      assignUserButton.onclick = () => this.assignUser(task.id);
-
-      detailsContainer.appendChild(assignUserButton);
+      if (docSnap.data().state == "Todo") {
+        const selectElement = document.createElement("select");
+        selectElement.id = "user-select";
+        selectElement.classList.add("form-select")
+        const optionElement = document.createElement("option");
+        optionElement.value = "";
+        optionElement.textContent = "Select a user";
+        selectElement.appendChild(optionElement);
+        detailsContainer.appendChild(selectElement);
+  
+        const assignUserButton = document.createElement("button");
+        assignUserButton.textContent = "Assign User";
+        assignUserButton.classList.add("btn", "btn-primary");
+        assignUserButton.onclick = () => this.assignUser(docSnap.id);
+  
+        detailsContainer.appendChild(assignUserButton);
+      }
+      const changeStateButton = document.createElement("button");
+      changeStateButton.textContent = "Mark as done";
+      changeStateButton.classList.add("btn", "btn-success");
+      changeStateButton.onclick = () => this.changeTaskState(docSnap.id);
+  
+      const closeButton = document.createElement("button");
+      closeButton.textContent = "Close";
+      closeButton.classList.add("btn", "btn-danger");
+      closeButton.onclick = () => this.changeTaskDetailsVisibility();
+  
+      
+      detailsContainer.appendChild(changeStateButton);
+      detailsContainer.appendChild(closeButton);
+  
+      this.populateUserDropdown();
+      this.changeTaskDetailsVisibility();
     }
-    const changeStateButton = document.createElement("button");
-    changeStateButton.textContent = "Mark as done";
-    changeStateButton.classList.add("btn", "btn-success");
-    changeStateButton.onclick = () => this.changeTaskState(task.id);
-
-    const closeButton = document.createElement("button");
-    closeButton.textContent = "Close";
-    closeButton.classList.add("btn", "btn-danger");
-    closeButton.onclick = () => this.changeTaskDetailsVisibility();
-
-    
-    detailsContainer.appendChild(changeStateButton);
-    detailsContainer.appendChild(closeButton);
-
-    this.populateUserDropdown();
-    this.changeTaskDetailsVisibility();
   }
 
-  public assignUser(taskId: string) {
-    const task = this.taskService.getItemById(taskId);
+  public async assignUser(taskId: string) {
+    const docRef = doc(db, "tasks", taskId);
     const userSelect = document.getElementById("user-select") as HTMLSelectElement;
 
-    if (task && userSelect) {
-      task.userId = userSelect.value;
-      task.state = "Doing";
-      task.startDate = new Date();
-      this.taskService.updateItem(task);
+    if(userSelect) {
+      await updateDoc(docRef, {
+        userId: userSelect.value,
+        state: "Doing",
+        startDate: new Date(),
+      });
       this.renderTasks();
       this.changeTaskDetailsVisibility();
     }
   }
 
-  public changeTaskState(taskId: string) {
-    const task = this.taskService.getItemById(taskId);
-    if (!task) return;
-
-    task.state = "Done";
-    task.endDate = new Date();
-
-    this.taskService.updateItem(task);
+  public async changeTaskState(taskId: string) {
+    const docRef = doc(db, "tasks", taskId);
+    await updateDoc(docRef, {
+      state: "Done",
+      endDate: new Date(),
+    });
     this.renderTasks();
     this.changeTaskDetailsVisibility();
   }

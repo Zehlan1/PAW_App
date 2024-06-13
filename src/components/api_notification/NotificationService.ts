@@ -71,9 +71,15 @@ class NotificationListComponent {
         element.innerHTML = '';
         notifications.forEach((notification, index) => {
           const li = document.createElement('li');
-          li.textContent = `${notification.date} - ${notification.title}: ${notification.message} (Priority: ${notification.priority})`;
-          li.style.fontWeight = notification.read ? 'normal' : 'bold';
-          li.onclick = () => this.notificationService.markAsRead(index);
+          const cdiv = document.createElement('div');
+          cdiv.classList.add('card');
+          const cbdiv = document.createElement('div');
+          cbdiv.classList.add('card-body');
+          cbdiv.textContent = `${notification.date} - ${notification.title}: ${notification.message} (Priority: ${notification.priority})`;
+          cbdiv.style.fontWeight = notification.read ? 'normal' : 'bold';
+          cbdiv.onclick = () => this.notificationService.markAsRead(index);
+          cdiv.appendChild(cbdiv);
+          li.appendChild(cdiv);
           element.appendChild(li);
         });
       });
@@ -91,11 +97,9 @@ class NotificationDialogComponent {
 
   render(): void {
     this.notifications$.subscribe(notifications => {
-      const dialogNotifications = notifications.filter(
-        notification => (notification.priority === 'medium' || notification.priority === 'high') && !notification.read
-      );
-      if (dialogNotifications.length > 0) {
-        alert('You have new notifications:\n' + dialogNotifications.map(n => `${n.title}: ${n.message}`).join('\n'));
+      const dialogNotification = notifications[notifications.length-1]
+      if (dialogNotification.priority === 'medium' || dialogNotification.priority === 'high') {
+        alert('You have new notifications:\n' + `${dialogNotification.title}: ${dialogNotification.message}`);
       }
     });
   }

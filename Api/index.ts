@@ -33,7 +33,6 @@ app.get('/', (req,res)=>{
     res.send('test')
 })
 
-
 app.post('/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -110,16 +109,27 @@ passport.use(new GoogleStrategy({
     done(null, user);
   }
 ));
+
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-app.get('/auth/google/callback', 
+  app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
     function(req, res) {
-        req.session.user = req.user as User; 
-        console.log(req.user);
-        res.json(req.session.user);   
-});
+      const user = req.user as User;
+  
+      // Generate tokens
+      const token = generateToken(300, { username: user.username });
+      const refreshToken = generateToken(600, { username: user.username });
+  
+      // Save the user in the session
+      req.session.user = user;
+  
+      // Redirect back to the main page with tokens as query parameters
+      res.redirect(`http://localhost:5173/?token=${token}&refreshToken=${refreshToken}&username=${user.username}`);
+    }
+);
+  
 
 //Helper functions
 function validateUser(username: string, password: string): boolean {

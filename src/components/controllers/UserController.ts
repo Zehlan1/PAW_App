@@ -54,9 +54,11 @@ export class UserController {
 
   static toggleLoginBtns() {
     const loginBtn = document.getElementById("login_btn");
-    const googleLoginBtn = document.querySelector("#google_login_btn");
-    loginBtn?.classList.add("disabled");
-    googleLoginBtn?.classList.add("disabled");
+    const googleLoginBtn = document.getElementById("google_login_btn");
+    if (loginBtn != null && googleLoginBtn != null) {
+      loginBtn.style.display = "none";
+      googleLoginBtn.style.display = "none";
+    }
   }
 
   static updateUsernameDisplay() {
@@ -73,18 +75,33 @@ export class UserController {
 
   static async loginUserGoogle(event: Event){
     event.preventDefault();
-    const response = await fetch('http://localhost:3000/auth/google', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+    window.location.href = 'http://localhost:3000/auth/google';
+  }
+  
+  static getQueryParams() {
+    const params: { [key: string]: string } = {};
+    window.location.search.substr(1).split('&').forEach(function(item) {
+      const s = item.split('=');
+      params[s[0]] = s[1];
     });
-
-    if (!response.ok) {
-      throw new Error('Failed to login');
+    return params;
+  }
+  
+  static handleGoogleLoginRedirection() {
+    const params = this.getQueryParams();
+    const token = params['token'];
+    const refreshToken = params['refreshToken'];
+    const username = params['username'];
+  
+    if (token && refreshToken && username) {
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('refreshToken', refreshToken);
+      sessionStorage.setItem('userData', JSON.stringify({ username }));
+      
+      this.toggleLoginBtns();
+      this.updateUsernameDisplay();
+      
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
-
-    const data = await response.json();
-    console.log('Login successful:', data);
   }
 }

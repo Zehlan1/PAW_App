@@ -59,8 +59,14 @@ export class StoryController {
     if (storiesList) {
       storiesList.innerHTML = "";
       filteredData.forEach((story) => {
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("card", "mb-2")
+
+        const buttonBox = document.createElement("div");
+        buttonBox.classList.add("d-flex", "flex-row", "gap-1");
+
         const storyElement = document.createElement("div");
-        storyElement.classList.add("container", "mx-auto", "mb-2", "bg-secondary");
+        storyElement.classList.add("card-body");
         storyElement.innerHTML = `
           <h4>${story.name}</h4>
           <p class="text-muted">${story.description}</p>
@@ -71,24 +77,26 @@ export class StoryController {
   
         const selectButton = document.createElement("button");
         selectButton.textContent = "Select";
-        selectButton.classList.add("btn", "btn-success");
+        selectButton.classList.add("btn", "btn-success", "mr-2");
         selectButton.onclick = () => this.setActiveStory(story.id);
   
         const editButton = document.createElement("button");
         editButton.textContent = "Edit";
-        editButton.classList.add("btn", "btn-warning");
+        editButton.classList.add("btn", "btn-warning", "mr-2");
         editButton.onclick = () => this.editStory(story.id);
   
         const deleteButton = document.createElement("button");
         deleteButton.textContent = "Delete";
-        deleteButton.classList.add("btn", "btn-danger");
+        deleteButton.classList.add("btn", "btn-danger", "mr-2");
         deleteButton.onclick = () => this.deleteStory(story.id);
   
-        storyElement.appendChild(selectButton);
-        storyElement.appendChild(editButton);
-        storyElement.appendChild(deleteButton);
-        
-        storiesList.appendChild(storyElement);
+        buttonBox.appendChild(selectButton);
+        buttonBox.appendChild(editButton);
+        buttonBox.appendChild(deleteButton);
+        storyElement.appendChild(buttonBox);
+
+        wrapper.appendChild(storyElement);
+        storiesList.appendChild(wrapper);
       });
     }
   }

@@ -9,7 +9,7 @@
   </head>
   <body>
 
-    <nav class="navbar navbar-expand-lg px-2">
+    <nav class="navbar navbar-expand-lg px-2 border-bottom" style="height: 4rem;">
       <a class="navbar-brand" href="#">Home</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -23,12 +23,12 @@
             </a>
             <ul class="dropdown-menu">
               <li>
-                <div class="mx-auto mb-3" id="login_box">
+                <div class="mx-auto p-1" id="login_box">
                   <form id="login_form">
                     <label for="user_login" class="form-label">Login</label>
                     <input type="text" class="form-control" id="user_login" placeholder="Username" required/>
                     <label for="user_password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="user_password" placeholder="Password" required/>
+                    <input type="password" class="form-control mb-2" id="user_password" placeholder="Password" required/>
                     <button type="submit" class="btn btn-primary">Log In</button>
                   </form>
                 </div>
@@ -47,9 +47,6 @@
           <li class="nav-item">
             <button type="button" id="notify_btn_med" class="btn">Notify Medium</button>
           </li>
-          <!-- <li class="nav-item">
-            <div id="notification-count"></div>
-          </li> -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="notification-count">
               Notifications
@@ -61,38 +58,27 @@
             </ul>
           </li>
         </ul>
-        <div class="my-2 my-lg-0 ms-auto">
-          <span id="username_box"></span>
-          DUMMY
+        <div class="my-2 my-lg-0 ms-auto card">
+          <div class="card-body" id="username_box" style="display: none;"></div>
         </div>
       </div>
     </nav>
 
     <div class="container d-flex justify-content-center align-items-center p-3">
-      <!-- <div class="mx-auto mb-3" id="login_box">
-        <form id="login_form">
-          <label for="user_login" class="form-label">Login</label>
-          <input type="text" class="form-control" id="user_login" placeholder="Username" required/>
-          <label for="user_password" class="form-label">Password</label>
-          <input type="password" class="form-control" id="user_password" placeholder="Password" required/>
-          <button type="submit" class="btn btn-primary">Log In</button>
-        </form>
-      </div> -->
-  
-      <div class="mx-auto mb-3"  id="project-section" style="display: block;">
+      <div class="mx-auto mb-3"  id="project-section" style="display: block; width: 60rem;">
         <form id="project-form" class="mb-3">
           <input type="hidden" id="project-id">
           <label for="project-name" class="form-label">Name</label>
           <input type="text" class="form-control" id="project-name" placeholder="Project Name" required>
           <label for="project-description" class="form-label">Description</label>
-          <input type="text" class="form-control" id="project-description" placeholder="Project Description" required></input>
+          <input type="text" class="form-control mb-2" id="project-description" placeholder="Project Description" required></input>
           <button type="submit" class="btn btn-primary">Save Project</button>
         </form>
   
         <div id="projects-list"></div>
       </div>
   
-      <div class="mx-auto mb-3" id="story-section" style="display: none;">
+      <div class="mx-auto mb-3" id="story-section" style="display: none; width: 60rem;">
         <form id="story-form" class="mb-3">
           <input type="hidden" id="story-id">
           <label for="story-name" class="form-label">Name</label>
@@ -106,7 +92,7 @@
               <option value="High">High</option>
           </select>
           <label for="story-status" class="form-label">Status</label>
-          <select class="form-select" id="story-status">
+          <select class="form-select mb-2" id="story-status">
               <option value="Todo">To Do</option>
               <option value="Doing">Doing</option>
               <option value="Done">Done</option>
@@ -115,7 +101,7 @@
         </form>
   
         <label for="story-filter" class="form-label">Filter by status:</label>
-        <select class="form-select" id="story-filter">
+        <select class="form-select mb-2" id="story-filter">
           <option value="Todo">To Do</option>
           <option value="Doing">Doing</option>
           <option value="Done">Done</option>
@@ -124,7 +110,7 @@
         <div id="stories-list"></div>
       </div>
   
-      <div class="mx-auto mb-3" id="task-section" style="display: none;">
+      <div class="mx-auto mb-3" id="task-section" style="display: none; width: 60rem;">
         <form id="task-form" class="mb-3">
           <input type="hidden" id="task-id">
           <label for="task-name" class="form-label">Name</label>
@@ -141,7 +127,7 @@
           <label for="task-estimated-time" class="form-label">Est. Completion Time</label>
           <input type="number" class="form-control" id="task-estimated-time" placeholder="Estimated Time (hours)">
           <label for="task-status" class="form-label">Status</label>
-          <select class="form-select" id="task-status">
+          <select class="form-select mb-2" id="task-status">
               <option value="Todo">To Do</option>
               <option value="Doing">Doing</option>
               <option value="Done">Done</option>
@@ -149,7 +135,7 @@
           <button type="submit" class="btn btn-primary">Save Task</button>
         </form>
   
-        <div class="container mx-auto mb-3 bg-secondary" id="tasks-board">
+        <div class="card-body" id="tasks-board">
           <div class="row">
             <div class="col" id="tasks-todo">
               <h3>To Do</h3>
@@ -164,7 +150,9 @@
               <div class="tasks-list"></div>
             </div>
           </div>
-          <div class="col" id="task-details-container"></div>
+        </div>
+        <div class="card" style="display: none;" id="task-details-wrapper">
+          <div class="card-body" id="task-details-container"></div>
         </div>
       </div>
     </div>

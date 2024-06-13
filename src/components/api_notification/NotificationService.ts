@@ -72,7 +72,7 @@ class NotificationListComponent {
         notifications.forEach((notification, index) => {
           const li = document.createElement('li');
           const cdiv = document.createElement('div');
-          cdiv.classList.add('card');
+          cdiv.classList.add('card', 'm-1');
           const cbdiv = document.createElement('div');
           cbdiv.classList.add('card-body');
           cbdiv.textContent = `${notification.date} - ${notification.title}: ${notification.message} (Priority: ${notification.priority})`;

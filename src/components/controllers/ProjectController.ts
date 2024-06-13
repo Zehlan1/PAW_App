@@ -36,8 +36,14 @@ export class ProjectController {
         projectsList.innerHTML = "";
   
         projects.forEach((project) => {
+          const wrapper = document.createElement("div");
+          wrapper.classList.add("card", "mb-2")
+
+          const buttonBox = document.createElement("div");
+          buttonBox.classList.add("d-flex", "flex-row", "gap-1");
+
           const projectElement = document.createElement("div");
-          projectElement.classList.add("container", "mx-auto", "mb-2", "bg-secondary");
+          projectElement.classList.add("card-body");
           projectElement.innerHTML = `
             <h3>${project.data().name}</h3>
             <p class="text-muted">${project.data().description}</p>
@@ -58,11 +64,13 @@ export class ProjectController {
           deleteButton.classList.add("btn", "btn-danger");
           deleteButton.onclick = () => this.deleteProject(project.id);
   
-          projectElement.appendChild(selectButton);
-          projectElement.appendChild(editButton);
-          projectElement.appendChild(deleteButton);
+          buttonBox.appendChild(selectButton);
+          buttonBox.appendChild(editButton);
+          buttonBox.appendChild(deleteButton);
+          projectElement.appendChild(buttonBox);
   
-          projectsList.appendChild(projectElement);
+          wrapper.appendChild(projectElement);
+          projectsList.appendChild(wrapper);
         });
       }
     }

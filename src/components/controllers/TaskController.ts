@@ -51,9 +51,15 @@ export class TaskController {
     }
 
     querySnapshot.forEach((task) => {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("card", "mb-2")
+
+      const buttonBox = document.createElement("div");
+      buttonBox.classList.add("d-flex", "flex-row", "gap-1");
+
       const taskElement = document.createElement("div");
       taskElement.className = "task-card";
-      taskElement.classList.add("container", "mx-auto", "mb-2", "bg-primary");
+      taskElement.classList.add("card-body");
       taskElement.innerHTML = `
         <h4>${task.data().name}</h4>
         <p class="text-muted">${task.data().description}</p>
@@ -75,17 +81,20 @@ export class TaskController {
       detailsButton.classList.add("btn", "btn-info");
       detailsButton.onclick = () => this.showTaskDetails(task.id);
 
-      taskElement.appendChild(editButton);
-      taskElement.appendChild(deleteButton);
-      taskElement.appendChild(detailsButton);
+      buttonBox.appendChild(editButton);
+      buttonBox.appendChild(deleteButton);
+      buttonBox.appendChild(detailsButton);
+      taskElement.appendChild(buttonBox);
+
+      wrapper.appendChild(taskElement);
 
       // Append to the correct column based on task status
       if (task.data().state === "Todo" && todoList) {
-        todoList.appendChild(taskElement);
+        todoList.appendChild(wrapper);
       } else if (task.data().state === "Doing" && doingList) {
-        doingList.appendChild(taskElement);
+        doingList.appendChild(wrapper);
       } else if (task.data().state === "Done" && doneList) {
-        doneList.appendChild(taskElement);
+        doneList.appendChild(wrapper);
       }
     });
   }
@@ -160,6 +169,9 @@ export class TaskController {
     if (!detailsContainer) return;
 
     if (docSnap.exists()) {
+      const buttonBox = document.createElement("div");
+      buttonBox.classList.add("d-flex", "flex-row", "gap-1");
+      
       detailsContainer.innerHTML = `
         <h2>Task Details: ${docSnap.data().name}</h2>
         <p>Description: ${docSnap.data().description}</p>
@@ -174,7 +186,7 @@ export class TaskController {
       if (docSnap.data().state == "Todo") {
         const selectElement = document.createElement("select");
         selectElement.id = "user-select";
-        selectElement.classList.add("form-select")
+        selectElement.classList.add("form-select", 'mb-2')
         const optionElement = document.createElement("option");
         optionElement.value = "";
         optionElement.textContent = "Select a user";
@@ -186,7 +198,7 @@ export class TaskController {
         assignUserButton.classList.add("btn", "btn-primary");
         assignUserButton.onclick = () => this.assignUser(docSnap.id);
   
-        detailsContainer.appendChild(assignUserButton);
+        buttonBox.appendChild(assignUserButton);
       }
       const changeStateButton = document.createElement("button");
       changeStateButton.textContent = "Mark as done";
@@ -199,8 +211,9 @@ export class TaskController {
       closeButton.onclick = () => this.changeTaskDetailsVisibility();
   
       
-      detailsContainer.appendChild(changeStateButton);
-      detailsContainer.appendChild(closeButton);
+      buttonBox.appendChild(changeStateButton);
+      buttonBox.appendChild(closeButton);
+      detailsContainer.appendChild(buttonBox);
   
       this.populateUserDropdown();
       this.changeTaskDetailsVisibility();
@@ -233,7 +246,7 @@ export class TaskController {
   }
 
   private changeTaskDetailsVisibility() {
-    const detailsContainer = document.getElementById("task-details-container");
+    const detailsContainer = document.getElementById("task-details-wrapper");
     if (detailsContainer) {
       if (detailsContainer.style.display == "block") {
         detailsContainer.style.display = "none";

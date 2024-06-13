@@ -66,6 +66,7 @@ export class UserController {
         const usernameDisplay = document.getElementById('username_box');
         if (usernameDisplay) {
             usernameDisplay.textContent = user.username; 
+            usernameDisplay.style.display = "block";
         }
     }
   }

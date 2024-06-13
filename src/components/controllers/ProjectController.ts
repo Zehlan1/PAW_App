@@ -137,7 +137,7 @@ export class ProjectController {
     }
   
     public async setActiveProject(id: string): Promise<void> {
-      localStorage.setItem('activeProjectId', id);
+      this.storyController.setProject(id);
       await this.storyController.renderStories();
       this.toggleProjectVisibility(false);
       this.toggleStoryVisibility(true);

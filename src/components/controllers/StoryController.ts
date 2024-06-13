@@ -24,11 +24,15 @@ const db = getFirestore(app);
 
 export class StoryController {
   private taskController = new TaskController();
-  private projectId = localStorage.getItem('activeProjectId');
+  private projectId: any;
 
   constructor() {
     this.attachEventListeners();
     this.attachFilterChangeListener();
+  }
+
+  public setProject(id: string) {
+    this.projectId = id;
   }
 
   public async renderStories() {
@@ -184,9 +188,9 @@ export class StoryController {
   }
 
   public setActiveStory(storyId: string): void {
-    localStorage.setItem('activeStoryId', storyId);
-    this.toggleStoryVisibility(false);
+    this.taskController.setStory(storyId);
     this.taskController.renderTasks();
+    this.toggleStoryVisibility(false);
     this.toggleTaskVisibility(true); 
     
   }

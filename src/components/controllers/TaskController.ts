@@ -1,7 +1,5 @@
-import { v4 as uuidv4 } from "uuid";
 import { Task } from "../models/Task";
 import { UserController } from "./UserController";
-import { ApiService } from "../api_mock/ApiService";
 
 import { initializeApp } from "firebase/app";
 import { deleteDoc, doc, getDoc, getDocs, getFirestore, query, setDoc, updateDoc, where } from "firebase/firestore";
@@ -24,10 +22,14 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 export class TaskController {
-  private storyId = localStorage.getItem('activeStoryId');
+  private storyId: any;
 
   constructor() {
     this.attachEventListeners();
+  }
+
+  public setStory(id: string) {
+    this.storyId = id;
   }
 
   public async renderTasks() {
